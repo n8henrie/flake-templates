@@ -6,15 +6,33 @@
   outputs = {
     self,
     nixpkgs,
-  }: {
-    packages =
-      nixpkgs.lib.genAttrs
-      ["aarch64-darwin" "x86_64-linux" "aarch64-linux"]
-      (system: let
-        pkgs = import nixpkgs {inherit system;};
+  }: let
+    inherit (nixpkgs) lib;
+    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
+    systemGen = attrs:
+      builtins.foldl' (acc: system:
+        lib.recursiveUpdate acc (attrs {
+          inherit system;
+          pkgs = import nixpkgs {inherit system;};
+        })) {}
+      systems;
+  in
+    systemGen (
+      {
+        pkgs,
+        system,
+      }: let
+        pname = "foo";
       in {
-        package = pkgs.hello;
-        default = self.packages.${system}.package;
-      });
-  };
+        packages.${system} = {
+          default = self.packages.${system}.${pname};
+          ${pname} = pkgs.hello;
+        };
+
+        apps.${system}.default = {
+          type = "app";
+          program = "${self.packages.${system}.${pname}}/bin/hello";
+        };
+      }
+    );
 }
