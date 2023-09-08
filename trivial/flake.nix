@@ -9,19 +9,14 @@
   }: let
     inherit (nixpkgs) lib;
     systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    systemGen = attrs:
+    systemClosure = attrs:
       builtins.foldl' (acc: system:
-        lib.recursiveUpdate acc (attrs {
-          inherit system;
-          pkgs = import nixpkgs {inherit system;};
-        })) {}
+        lib.recursiveUpdate acc (attrs system)) {}
       systems;
   in
-    systemGen (
-      {
-        pkgs,
-        system,
-      }: let
+    systemClosure (
+      system: let
+        pkgs = import nixpkgs {inherit system;};
         pname = "foo";
       in {
         packages.${system} = {
