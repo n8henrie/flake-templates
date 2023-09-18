@@ -28,6 +28,10 @@
           type = "app";
           program = "${self.packages.${system}.${pname}}/bin/hello";
         };
+
+        devShells.${system}.default =
+          pkgs.mkShell {
+          };
       }
     );
 }
