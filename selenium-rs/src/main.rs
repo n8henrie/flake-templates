@@ -20,5 +20,6 @@ async fn main() -> Result<()> {
     let driver = WebDriver::new("http://localhost:4444", caps).await?;
     driver.goto("https://n8henrie.com").await?;
 
+    driver.close_window().await?;
     Ok(())
 }
