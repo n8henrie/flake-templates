@@ -15,6 +15,11 @@
         path = ./rust;
         description = "Basic rust template";
       };
+
+      selenium-rs = {
+        path = ./selenium-rs;
+        description = "Example using thirtyfour for selenium in rust";
+      };
     };
   };
 }
