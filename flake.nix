@@ -11,6 +11,10 @@
         path = ./cpp;
         description = "Basic example compiling a cpp program";
       };
+      rust = {
+        path = ./rust;
+        description = "Basic rust template";
+      };
     };
   };
 }
