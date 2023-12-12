@@ -17,7 +17,7 @@
     systemClosure (
       system: let
         pkgs = import nixpkgs {inherit system;};
-        pname = "foo";
+        pname = "hello";
       in {
         packages.${system} = {
           default = self.packages.${system}.${pname};
@@ -26,7 +26,7 @@
 
         apps.${system}.default = {
           type = "app";
-          program = "${self.packages.${system}.${pname}}/bin/hello";
+          program = "${self.packages.${system}.${pname}}/bin/${pname}";
         };
 
         devShells.${system}.default =
