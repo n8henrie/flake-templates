@@ -20,6 +20,10 @@
         path = ./selenium-rs;
         description = "Example using thirtyfour for selenium in rust";
       };
+      aarch64-darwin-trivial = {
+        path = ./aarch64-darwin-trivial;
+        description = "Very basic setup for aarch64-darwin";
+      };
     };
   };
 }
