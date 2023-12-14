@@ -44,6 +44,11 @@
           };
         };
 
+        apps.${system}.default = {
+          type = "app";
+          program = "${self.packages.${system}.${name}}/bin/${name}";
+        };
+
         devShells.${system}.default = pkgs.mkShell {
           buildInputs = [toolchain];
         };
