@@ -7,6 +7,10 @@
         path = ./aarch64-darwin-trivial;
         description = "Very basic setup for aarch64-darwin";
       };
+      convert-shell-script = {
+        path = ./convert-shell-script;
+        description = "Nixify an existing shell script";
+      }:
       cpp = {
         path = ./cpp;
         description = "Basic example compiling a cpp program";
