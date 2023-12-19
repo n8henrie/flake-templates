@@ -5,7 +5,7 @@
     inherit (nixpkgs) lib;
     getTemplate = name: {
       path = ./${name};
-      inherit (import ./${name}/flake.nix) description;
+      inherit (import "./${name}/flake.nix") description;
     };
     templateBuilder = names: lib.genAttrs names getTemplate;
   in {
