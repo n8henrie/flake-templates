@@ -1,0 +1,24 @@
+name: "CI"
+on:
+  pull_request:
+  push:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v24
+    - run: nix build
+    - run: nix flake check
+    - run: |
+        templatesDir=$PWD
+        mapfile -t templateNames < <(
+          nix flake show --json |
+            jq -r '.templates | keys[]'
+        )
+
+        for template in "${templateNames[@]}"; do
+          pushd "$(mktemp -d)"
+          nix flake init -t "${templatesDir}#${template}"
+          popd
+        done
