@@ -1,3 +1,5 @@
+[![CI](https://github.com/n8henrie/flake-templates/actions/workflows/ci.yml/badge.svg)](https://github.com/n8henrie/flake-templates/actions/workflows/ci.yml)
+
 # flake-templates
 
 My personal nix flake templates.
