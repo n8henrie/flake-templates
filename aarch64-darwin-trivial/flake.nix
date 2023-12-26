@@ -16,7 +16,7 @@
       default = self.overlays.${name};
       ${name} = _: prev: {
         # inherit doesn't work with dynamic attributes
-        ${name} = (self.packages.${prev.system}).${name};
+        ${name} = self.packages.${prev.system}.${name};
       };
     };
     packages.${system}.default = pkgs.writeShellScriptBin name "echo hello there";
