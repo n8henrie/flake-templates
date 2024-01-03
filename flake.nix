@@ -15,6 +15,7 @@
       "convert-shell-script"
       "cpp"
       "jupyterlab"
+      "python"
       "rust"
       "selenium-rs"
       "trivial"
