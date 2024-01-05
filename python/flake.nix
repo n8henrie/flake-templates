@@ -32,35 +32,39 @@
           ];
         };
         pname = "foo";
-        propagatedBuildInputs = with pkgs.python311Packages; [];
-        ${pname} = {
-          lib,
-          python311,
-        }:
-          python311.pkgs.buildPythonPackage {
-            inherit pname;
-            version =
-              builtins.elemAt
-              (lib.splitString "\""
-                (lib.findSingle
-                  (val: builtins.match "^__version__ = \".*\"$" val != null)
-                  (abort "none")
-                  (abort "multiple")
-                  (lib.splitString "\n"
-                    (builtins.readFile ./src/${pname}/__init__.py))))
-              1;
-
-            src = lib.cleanSource ./.;
-            pyproject = true;
-            nativeBuildInputs = with pkgs.python311Packages; [
-              setuptools-scm
-            ];
-            inherit propagatedBuildInputs;
-          };
+        pypkgs = pkgs.python311Packages;
+        propagatedBuildInputs = with pypkgs; [];
       in {
         packages.${system} = {
-          ${pname} = pkgs.callPackage pname {};
-          default = pkgs.python311.withPackages (_: [self.packages.${system}.${pname}]);
+          default = pkgs.python311.withPackages (
+            _: [
+              (pkgs.callPackage self.packages.${system}.${pname} {})
+            ]
+          );
+          ${pname} = {
+            lib,
+            python311,
+          }:
+            python311.pkgs.buildPythonPackage {
+              inherit pname;
+              version =
+                builtins.elemAt
+                (lib.splitString "\""
+                  (lib.findSingle
+                    (val: builtins.match "^__version__ = \".*\"$" val != null)
+                    (abort "none")
+                    (abort "multiple")
+                    (lib.splitString "\n"
+                      (builtins.readFile ./src/${pname}/__init__.py))))
+                1;
+
+              src = lib.cleanSource ./.;
+              pyproject = true;
+              nativeBuildInputs = with pypkgs; [
+                setuptools-scm
+              ];
+              inherit propagatedBuildInputs;
+            };
         };
 
         devShells.${system}.default = pkgs.mkShell {
