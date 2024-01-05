@@ -73,6 +73,7 @@
             python38
             python39
             python310
+            python312
             (python311.withPackages (
               ps:
                 propagatedBuildInputs
