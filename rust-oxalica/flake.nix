@@ -1,11 +1,18 @@
 {
-  description = "Basic template for nix + rust";
+  description = "Basic template for nix + rust with rust toolchain provided by oxalica";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   outputs = {
     self,
     nixpkgs,
+    rust-overlay,
   }: let
     inherit (nixpkgs) lib;
     systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
@@ -18,7 +25,15 @@
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [self.overlays.default];
+          overlays = [
+            (import rust-overlay)
+            self.overlays.default
+          ];
+        };
+        toolchain = pkgs.rust-bin.stable.latest.default;
+        rustPlatform = pkgs.makeRustPlatform {
+          rustc = toolchain;
+          cargo = toolchain;
         };
         # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
         name =
@@ -35,7 +50,7 @@
         };
         packages.${system} = {
           default = self.packages.${system}.${name};
-          ${name} = pkgs.rustPlatform.buildRustPackage {
+          ${name} = rustPlatform.buildRustPackage {
             inherit name;
             version = "0.0.1";
             src = ./.;
@@ -49,10 +64,7 @@
         };
 
         devShells.${system}.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            cargo
-            rust-analyzer
-          ];
+          buildInputs = [toolchain];
         };
       }
     );

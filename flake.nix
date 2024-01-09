@@ -17,6 +17,7 @@
       "jupyterlab"
       "python"
       "rust"
+      "rust-oxalica"
       "selenium-rs"
       "trivial"
     ];
