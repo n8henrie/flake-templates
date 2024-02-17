@@ -37,7 +37,10 @@
           default = self.packages.${system}.${name};
           ${name} = pkgs.rustPlatform.buildRustPackage {
             inherit name;
-            version = "0.0.1";
+            version =
+              if builtins.pathExists ./Cargo.toml
+              then ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package).version
+              else "placeholder";
             src = ./.;
             cargoLock.lockFile = ./Cargo.lock;
           };
