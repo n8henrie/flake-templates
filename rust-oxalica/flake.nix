@@ -38,7 +38,7 @@
         # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
         name =
           if builtins.pathExists ./Cargo.toml
-          then ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package).name
+          then (builtins.fromTOML (builtins.readFile ./Cargo.toml).package).name
           else "placeholder";
       in {
         overlays = {
@@ -54,7 +54,7 @@
             inherit name;
             version =
               if builtins.pathExists ./Cargo.toml
-              then ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package).version
+              then (builtins.fromTOML (builtins.readFile ./Cargo.toml).package).version
               else "placeholder";
             src = ./.;
             cargoLock.lockFile = ./Cargo.lock;
