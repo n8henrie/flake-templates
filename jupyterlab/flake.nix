@@ -55,6 +55,7 @@
               pandas
               polars
               pyarrow
+              sklearn
             ]);
         };
 
