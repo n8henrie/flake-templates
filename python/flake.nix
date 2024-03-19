@@ -12,16 +12,13 @@
     nixpkgs,
     nixpkgs-old,
   }: let
-    inherit (nixpkgs) lib;
     systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    systemClosure = attrs:
-      builtins.foldl'
-      (acc: system:
-        lib.recursiveUpdate acc (attrs system))
-      {}
-      systems;
+    eachSystem = with nixpkgs.lib;
+      f:
+        foldAttrs mergeAttrs {}
+        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
   in
-    systemClosure (
+    eachSystem (
       system: let
         pkgs = import nixpkgs {
           inherit system;

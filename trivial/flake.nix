@@ -7,28 +7,29 @@
     self,
     nixpkgs,
   }: let
-    inherit (nixpkgs) lib;
+    name = "";
     systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    name = "hello";
-    systemClosure = attrs:
-      builtins.foldl' (acc: system:
-        lib.recursiveUpdate acc (attrs system)) {}
-      systems;
+    eachSystem = with nixpkgs.lib;
+      f:
+        foldAttrs mergeAttrs {}
+        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
   in
-    systemClosure (
+    {
+      overlays = {
+        default = self.overlays.${name};
+        ${name} = _: prev: {
+          # inherit doesn't work with dynamic attributes
+          ${name} = self.packages.${prev.system}.${name};
+        };
+      };
+    }
+    // (eachSystem (
       system: let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [self.overlays.default];
         };
       in {
-        overlays = {
-          default = self.overlays.${name};
-          ${name} = _: prev: {
-            # inherit doesn't work with dynamic attributes
-            ${name} = self.packages.${prev.system}.${name};
-          };
-        };
         packages.${system} = {
           default = self.packages.${system}.${name};
           ${name} = pkgs.hello;
@@ -43,5 +44,5 @@
           pkgs.mkShell {
           };
       }
-    );
+    ));
 }

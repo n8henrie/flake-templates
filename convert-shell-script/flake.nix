@@ -7,15 +7,23 @@
     self,
     nixpkgs,
   }: let
-    inherit (nixpkgs) lib;
-    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
     name = "my-script";
-    systemClosure = attrs:
-      builtins.foldl' (acc: system:
-        lib.recursiveUpdate acc (attrs system)) {}
-      systems;
+    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
+    eachSystem = with nixpkgs.lib;
+      f:
+        foldAttrs mergeAttrs {}
+        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
   in
-    systemClosure (
+    {
+      overlays = {
+        default = self.overlays.${name};
+        ${name} = _: prev: {
+          # inherit doesn't work with dynamic attributes
+          ${name} = self.packages.${prev.system}.${name};
+        };
+      };
+    }
+    // (eachSystem (
       system: let
         pkgs = import nixpkgs {
           inherit system;
@@ -31,14 +39,6 @@
             '';
           });
       in {
-        overlays = {
-          default = self.overlays.${name};
-          ${name} = _: prev: {
-            # inherit doesn't work with dynamic attributes
-            ${name} = self.packages.${prev.system}.${name};
-          };
-        };
-
         packages.${system} = {
           default = self.outputs.packages.${system}.script;
           script = pkgs.symlinkJoin {
@@ -58,5 +58,5 @@
           inherit buildInputs;
         };
       }
-    );
+    ));
 }

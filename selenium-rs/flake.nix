@@ -15,13 +15,23 @@
     rust-overlay,
   }: let
     inherit (nixpkgs) lib;
+    inherit ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package) name;
     systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    systemClosure = attrs:
-      builtins.foldl' (acc: system:
-        lib.recursiveUpdate acc (attrs system)) {}
-      systems;
+    eachSystem = with lib;
+      f:
+        foldAttrs mergeAttrs {}
+        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
   in
-    systemClosure (
+    {
+      overlays = {
+        default = self.overlays.${name};
+        ${name} = _: prev: {
+          # inherit doesn't work with dynamic attributes
+          ${name} = self.packages.${prev.system}.${name};
+        };
+      };
+    }
+    // (eachSystem (
       system: let
         pkgs = import nixpkgs {
           inherit system;
@@ -35,15 +45,7 @@
           rustc = toolchain;
           cargo = toolchain;
         };
-        inherit ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package) name;
       in {
-        overlays = {
-          default = self.overlays.${name};
-          ${name} = _: prev: {
-            # inherit doesn't work with dynamic attributes
-            ${name} = self.packages.${prev.system}.${name};
-          };
-        };
         packages.${system} = {
           default = self.packages.${system}.${name};
           ${name} = rustPlatform.buildRustPackage {
@@ -75,5 +77,5 @@
           program = "${runner}/bin/run";
         };
       }
-    );
+    ));
 }
