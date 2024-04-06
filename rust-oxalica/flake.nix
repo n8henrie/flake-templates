@@ -49,7 +49,7 @@
           cargo = toolchain;
         };
       in {
-        packages.${system} = {
+        packages = {
           default = self.packages.${system}.${name};
           ${name} = rustPlatform.buildRustPackage {
             inherit name;
@@ -62,12 +62,12 @@
           };
         };
 
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
-        devShells.${system}.default = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = [toolchain];
         };
       }

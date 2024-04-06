@@ -46,7 +46,7 @@
           cargo = toolchain;
         };
       in {
-        packages.${system} = {
+        packages = {
           default = self.packages.${system}.${name};
           ${name} = rustPlatform.buildRustPackage {
             inherit name;
@@ -61,11 +61,11 @@
           };
         };
 
-        devShells.${system}.default = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = [toolchain];
         };
 
-        apps.${system}.default = let
+        apps.default = let
           runner = pkgs.writeShellScriptBin "run" ''
             ${lib.getExe pkgs.geckodriver} &
             pid=$?

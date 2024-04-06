@@ -34,7 +34,7 @@
           overlays = [self.overlays.default];
         };
       in {
-        packages.${system} = {
+        packages = {
           default = self.packages.${system}.${name};
           ${name} = pkgs.rustPlatform.buildRustPackage {
             inherit name;
@@ -47,12 +47,12 @@
           };
         };
 
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
-        devShells.${system}.default = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             cargo
             rust-analyzer

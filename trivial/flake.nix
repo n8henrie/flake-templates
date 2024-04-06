@@ -30,17 +30,17 @@
           overlays = [self.overlays.default];
         };
       in {
-        packages.${system} = {
+        packages = {
           default = self.packages.${system}.${name};
           ${name} = pkgs.hello;
         };
 
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
-        devShells.${system}.default =
+        devShells.default =
           pkgs.mkShell {
           };
       }

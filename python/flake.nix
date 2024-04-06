@@ -32,7 +32,7 @@
         pypkgs = pkgs.python311Packages;
         propagatedBuildInputs = with pypkgs; [];
       in {
-        packages.${system} = {
+        packages = {
           default = pkgs.python311.withPackages (
             _: [
               (pkgs.callPackage self.packages.${system}.${pname} {})
@@ -64,7 +64,7 @@
             };
         };
 
-        devShells.${system}.default = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             python37
             python38

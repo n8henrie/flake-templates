@@ -39,7 +39,7 @@
             '';
           });
       in {
-        packages.${system} = {
+        packages = {
           default = self.outputs.packages.${system}.script;
           script = pkgs.symlinkJoin {
             inherit name;
@@ -49,12 +49,12 @@
           };
         };
 
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${self.packages.${system}.script}/bin/${name}";
         };
 
-        devShells.${system}.default = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           inherit buildInputs;
         };
       }

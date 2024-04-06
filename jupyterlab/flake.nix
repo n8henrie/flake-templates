@@ -30,7 +30,7 @@
           overlays = [self.overlays.default];
         };
       in {
-        packages.${system} = let
+        packages = let
           jupyter-black = let
             pname = "jupyter-black";
             version = "0.3.4";
@@ -60,7 +60,7 @@
             ]);
         };
 
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${self.packages.${system}.default}/bin/jupyter-lab";
         };
