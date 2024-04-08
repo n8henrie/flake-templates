@@ -56,7 +56,6 @@
               jupyter-black
               jupyterlab
               matplotlib
-              pandas
               polars
               pyarrow
               scikitlearn
