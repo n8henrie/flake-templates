@@ -2,9 +2,9 @@
   description = "Flake for https://github.com/n8henrie/foo";
 
   inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs";
     # For python3.7
     nixpkgs-old.url = "github:nixos/nixpkgs/release-22.11";
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   };
 
   outputs = {

@@ -1,7 +1,7 @@
 {
   description = "Basic template for nix + rust";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
   outputs = {
     self,

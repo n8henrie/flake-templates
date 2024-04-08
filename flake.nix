@@ -1,7 +1,8 @@
 {
   description = "n8henrie's flake templates";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+
   outputs = {nixpkgs, ...}: let
     inherit (nixpkgs) lib;
     getTemplate = name: {
