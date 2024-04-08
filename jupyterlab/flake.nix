@@ -52,6 +52,7 @@
         in {
           default = pkgs.python311.withPackages (ps:
             with ps; [
+              hvplot
               jupyter-black
               jupyterlab
               matplotlib
