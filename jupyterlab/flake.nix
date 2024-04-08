@@ -40,6 +40,8 @@
               format = "pyproject";
               propagatedBuildInputs = with pkgs.python311Packages; [
                 black
+                ipython
+                tokenize-rt
                 setuptools-scm
               ];
               src = pkgs.fetchPypi {
