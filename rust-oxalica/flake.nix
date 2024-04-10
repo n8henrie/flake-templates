@@ -17,7 +17,7 @@
     # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
     name =
       if builtins.pathExists ./Cargo.toml
-      then (builtins.fromTOML (builtins.readFile ./Cargo.toml).package).name
+      then (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.name
       else "placeholder";
     systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
     eachSystem = with nixpkgs.lib;
@@ -55,7 +55,7 @@
             inherit name;
             version =
               if builtins.pathExists ./Cargo.toml
-              then (builtins.fromTOML (builtins.readFile ./Cargo.toml).package).version
+              then (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version
               else "placeholder";
             src = ./.;
             cargoLock.lockFile = ./Cargo.lock;
