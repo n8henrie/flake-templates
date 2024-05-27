@@ -19,6 +19,7 @@
       inherit (nixpkgs) lib;
       inherit ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package) name;
       systems = [
+        "x86_64-darwin"
         "aarch64-darwin"
         "x86_64-linux"
         "aarch64-linux"
