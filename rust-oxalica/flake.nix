@@ -9,22 +9,28 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    rust-overlay,
-  }: let
-    # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
-    name =
-      if builtins.pathExists ./Cargo.toml
-      then (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.name
-      else "placeholder";
-    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    eachSystem = with nixpkgs.lib;
-      f:
-        foldAttrs mergeAttrs {}
-        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
-  in
+  outputs =
+    {
+      self,
+      nixpkgs,
+      rust-overlay,
+    }:
+    let
+      # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
+      name =
+        if builtins.pathExists ./Cargo.toml then
+          (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.name
+        else
+          "placeholder";
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      eachSystem =
+        with nixpkgs.lib;
+        f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
+    in
     {
       overlays = {
         default = self.overlays.${name};
@@ -35,7 +41,8 @@
       };
     }
     // (eachSystem (
-      system: let
+      system:
+      let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
@@ -48,15 +55,17 @@
           rustc = toolchain;
           cargo = toolchain;
         };
-      in {
+      in
+      {
         packages = {
           default = self.packages.${system}.${name};
           ${name} = rustPlatform.buildRustPackage {
             inherit name;
             version =
-              if builtins.pathExists ./Cargo.toml
-              then (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version
-              else "placeholder";
+              if builtins.pathExists ./Cargo.toml then
+                (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version
+              else
+                "placeholder";
             src = ./.;
             cargoLock.lockFile = ./Cargo.lock;
           };
@@ -67,9 +76,7 @@
           program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
-        devShells.default = pkgs.mkShell {
-          buildInputs = [toolchain];
-        };
+        devShells.default = pkgs.mkShell { buildInputs = [ toolchain ]; };
       }
     ));
 }

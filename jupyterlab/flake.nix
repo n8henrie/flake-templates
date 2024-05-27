@@ -3,17 +3,19 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
-  outputs = {
-    self,
-    nixpkgs,
-  }: let
-    name = "jupyter-example";
-    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    eachSystem = with nixpkgs.lib;
-      f:
-        foldAttrs mergeAttrs {}
-        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
-  in
+  outputs =
+    { self, nixpkgs }:
+    let
+      name = "jupyter-example";
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      eachSystem =
+        with nixpkgs.lib;
+        f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
+    in
     {
       overlays = {
         default = self.overlays.${name};
@@ -24,43 +26,49 @@
       };
     }
     // (eachSystem (
-      system: let
+      system:
+      let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [self.overlays.default];
+          overlays = [ self.overlays.default ];
         };
-      in {
-        packages = let
-          jupyter-black = let
-            pname = "jupyter-black";
-            version = "0.3.4";
-          in
-            pkgs.python311Packages.buildPythonPackage {
-              inherit pname version;
-              format = "pyproject";
-              propagatedBuildInputs = with pkgs.python311Packages; [
-                black
-                ipython
-                tokenize-rt
-                setuptools-scm
-              ];
-              src = pkgs.fetchPypi {
+      in
+      {
+        packages =
+          let
+            jupyter-black =
+              let
+                pname = "jupyter-black";
+                version = "0.3.4";
+              in
+              pkgs.python311Packages.buildPythonPackage {
                 inherit pname version;
-                hash = "sha256-KjjzPUwyHrdo9CYQNjWsm4C0DJ5CqgYHKnKePK3cpMM=";
+                format = "pyproject";
+                propagatedBuildInputs = with pkgs.python311Packages; [
+                  black
+                  ipython
+                  tokenize-rt
+                  setuptools-scm
+                ];
+                src = pkgs.fetchPypi {
+                  inherit pname version;
+                  hash = "sha256-KjjzPUwyHrdo9CYQNjWsm4C0DJ5CqgYHKnKePK3cpMM=";
+                };
               };
-            };
-        in {
-          default = pkgs.python311.withPackages (ps:
-            with ps; [
-              hvplot
-              jupyter-black
-              jupyterlab
-              matplotlib
-              polars
-              pyarrow
-              scikitlearn
-            ]);
-        };
+          in
+          {
+            default = pkgs.python311.withPackages (
+              ps: with ps; [
+                hvplot
+                jupyter-black
+                jupyterlab
+                matplotlib
+                polars
+                pyarrow
+                scikitlearn
+              ]
+            );
+          };
 
         apps.default = {
           type = "app";

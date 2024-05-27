@@ -3,17 +3,19 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
-  outputs = {
-    self,
-    nixpkgs,
-  }: let
-    name = "";
-    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    eachSystem = with nixpkgs.lib;
-      f:
-        foldAttrs mergeAttrs {}
-        (map (s: mapAttrs (_: v: {${s} = v;}) (f s)) systems);
-  in
+  outputs =
+    { self, nixpkgs }:
+    let
+      name = "";
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      eachSystem =
+        with nixpkgs.lib;
+        f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
+    in
     {
       overlays = {
         default = self.overlays.${name};
@@ -24,12 +26,14 @@
       };
     }
     // (eachSystem (
-      system: let
+      system:
+      let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [self.overlays.default];
+          overlays = [ self.overlays.default ];
         };
-      in {
+      in
+      {
         packages = {
           default = self.packages.${system}.${name};
           ${name} = pkgs.hello;
@@ -40,9 +44,7 @@
           program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
-        devShells.default =
-          pkgs.mkShell {
-          };
+        devShells.default = pkgs.mkShell { };
       }
     ));
 }

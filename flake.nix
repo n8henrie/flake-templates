@@ -3,24 +3,27 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
-  outputs = {nixpkgs, ...}: let
-    inherit (nixpkgs) lib;
-    getTemplate = name: {
-      path = ./${name};
-      inherit (import ./${name}/flake.nix) description;
+  outputs =
+    { nixpkgs, ... }:
+    let
+      inherit (nixpkgs) lib;
+      getTemplate = name: {
+        path = ./${name};
+        inherit (import ./${name}/flake.nix) description;
+      };
+      templateBuilder = names: lib.genAttrs names getTemplate;
+    in
+    {
+      templates = templateBuilder [
+        "aarch64-darwin-trivial"
+        "convert-shell-script"
+        "cpp"
+        "jupyterlab"
+        "python"
+        "rust"
+        "rust-oxalica"
+        "selenium-rs"
+        "trivial"
+      ];
     };
-    templateBuilder = names: lib.genAttrs names getTemplate;
-  in {
-    templates = templateBuilder [
-      "aarch64-darwin-trivial"
-      "convert-shell-script"
-      "cpp"
-      "jupyterlab"
-      "python"
-      "rust"
-      "rust-oxalica"
-      "selenium-rs"
-      "trivial"
-    ];
-  };
 }

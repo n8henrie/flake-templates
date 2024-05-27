@@ -3,20 +3,25 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
-  outputs = {
-    self,
-    nixpkgs,
-  }: let
-    inherit (nixpkgs) lib;
-    systems = ["aarch64-darwin" "x86_64-linux" "aarch64-linux"];
-    name = "foo";
-  in
-    builtins.foldl' (acc: system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [self.overlays.default];
-      };
+  outputs =
+    { self, nixpkgs }:
+    let
+      inherit (nixpkgs) lib;
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      name = "foo";
     in
+    builtins.foldl' (
+      acc: system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ self.overlays.default ];
+        };
+      in
       lib.recursiveUpdate acc {
         overlays = {
           default = self.overlays.${name};
@@ -31,7 +36,7 @@
             inherit name;
             src = ./foo.cpp;
             dontUnpack = true;
-            buildInputs = [pkgs.gcc];
+            buildInputs = [ pkgs.gcc ];
             buildPhase = ''
               g++ -o foo $src
             '';
@@ -46,6 +51,6 @@
           type = "app";
           program = "${self.packages.${system}.foo}/bin/foo";
         };
-      }) {}
-    systems;
+      }
+    ) { } systems;
 }
