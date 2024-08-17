@@ -38,6 +38,8 @@
           buildCommand = ''
             ${old.buildCommand}
             patchShebangs $out;
+
+            # substituteInPlace $target --replace-fail "foo" "bar"
           '';
         });
       in
