@@ -23,12 +23,14 @@
         pkgs = nixpkgs.legacyPackages.${system};
         buildInputs = with pkgs; [ cowsay ];
         script = (pkgs.writeScriptBin name (builtins.readFile ./simple-script.sh)).overrideAttrs (old: {
-          buildCommand = ''
-            ${old.buildCommand}
-            patchShebangs $out;
+          buildCommand =
+            old.buildCommand
+            + ''
+              patchShebangs $out;
 
-            # substituteInPlace $target --replace-fail "foo" "bar"
-          '';
+              # substituteInPlace $target --replace-fail "foo" "bar"
+              # eval "$checkPhase"
+            '';
         });
       in
       {
