@@ -58,7 +58,8 @@
               };
           in
           {
-            default = pkgs.python311.withPackages (
+            default = self.outputs.packages.${system}.${name};
+            ${name} = pkgs.python311.withPackages (
               ps: with ps; [
                 hvplot
                 jupyter-black
