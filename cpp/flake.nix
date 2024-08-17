@@ -6,21 +6,23 @@
   outputs =
     { self, nixpkgs }:
     let
-      inherit (nixpkgs) lib;
+      name = "foo";
       systems = [
         "x86_64-darwin"
         "aarch64-darwin"
         "x86_64-linux"
         "aarch64-linux"
       ];
-      name = "foo";
+      eachSystem =
+        with nixpkgs.lib;
+        f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
     in
-    builtins.foldl' (
-      acc: system:
+    eachSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
       in
-      lib.recursiveUpdate acc {
+      {
         packages.${system} = {
           default = self.packages.${system}.foo;
           foo = pkgs.stdenv.mkDerivation {
