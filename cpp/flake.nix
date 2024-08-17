@@ -18,19 +18,9 @@
     builtins.foldl' (
       acc: system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ self.overlays.default ];
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
       in
       lib.recursiveUpdate acc {
-        overlays = {
-          default = self.overlays.${name};
-          ${name} = _: prev: {
-            # inherit doesn't work with dynamic attributes
-            ${name} = self.packages.${prev.system}.${name};
-          };
-        };
         packages.${system} = {
           default = self.packages.${system}.foo;
           foo = pkgs.stdenv.mkDerivation {

@@ -17,22 +17,10 @@
         with nixpkgs.lib;
         f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
     in
-    {
-      overlays = {
-        default = self.overlays.${name};
-        ${name} = _: prev: {
-          # inherit doesn't work with dynamic attributes
-          ${name} = self.packages.${prev.system}.${name};
-        };
-      };
-    }
-    // (eachSystem (
+    eachSystem (
       system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ self.overlays.default ];
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
       in
       {
         packages =
@@ -77,5 +65,5 @@
           program = "${self.packages.${system}.default}/bin/jupyter-lab";
         };
       }
-    ));
+    );
 }

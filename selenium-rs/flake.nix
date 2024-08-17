@@ -28,24 +28,12 @@
         with lib;
         f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
     in
-    {
-      overlays = {
-        default = self.overlays.${name};
-        ${name} = _: prev: {
-          # inherit doesn't work with dynamic attributes
-          ${name} = self.packages.${prev.system}.${name};
-        };
-      };
-    }
-    // (eachSystem (
+    eachSystem (
       system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [
-            (import rust-overlay)
-            self.overlays.default
-          ];
+          overlays = [ (import rust-overlay) ];
         };
         toolchain = pkgs.rust-bin.stable.latest.default;
         rustPlatform = pkgs.makeRustPlatform {
@@ -85,5 +73,5 @@
             program = "${runner}/bin/run";
           };
       }
-    ));
+    );
 }

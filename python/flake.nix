@@ -1,18 +1,10 @@
 {
   description = "Flake for https://github.com/n8henrie/foo";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
-    # For python3.7
-    nixpkgs-old.url = "github:nixos/nixpkgs/release-22.11";
-  };
+  inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      nixpkgs-old,
-    }:
+    { self, nixpkgs }:
     let
       systems = [
         "x86_64-darwin"
@@ -27,10 +19,7 @@
     eachSystem (
       system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ (_: _: { inherit (nixpkgs-old.legacyPackages.${system}) python37; }) ];
-        };
+        pkgs = nixpkgs.legacyPackages.${system};
         pname = "foo";
         pypkgs = pkgs.python311Packages;
         propagatedBuildInputs = with pypkgs; [ ];
@@ -59,7 +48,6 @@
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            python37
             python38
             python39
             python310
