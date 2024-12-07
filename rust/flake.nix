@@ -7,7 +7,7 @@
     { self, nixpkgs }:
     let
       # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
-      name =
+      pname =
         if builtins.pathExists ./Cargo.toml then
           (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.name
         else
@@ -29,22 +29,13 @@
       in
       {
         packages = {
-          default = self.packages.${system}.${name};
-          ${name} = pkgs.rustPlatform.buildRustPackage {
-            inherit name;
-            version =
-              if builtins.pathExists ./Cargo.toml then
-                (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version
-              else
-                "placeholder";
-            src = ./.;
-            cargoLock.lockFile = ./Cargo.lock;
-          };
+          default = self.packages.${system}.${pname};
+          ${pname} = pkgs.callPackage ./. { inherit pname; };
         };
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.${name}}/bin/${name}";
+          program = "${self.packages.${system}.${pname}}/bin/${pname}";
         };
 
         devShells.default = pkgs.mkShell {
