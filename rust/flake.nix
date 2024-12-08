@@ -41,8 +41,8 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             cargo
-            cargo-clippy
             cargo-watch
+            clippy
             rust-analyzer
             rustfmt
           ];
