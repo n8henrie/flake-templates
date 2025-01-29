@@ -21,17 +21,17 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         pname = "foo";
-        pypkgs = pkgs.python311Packages;
+        pypkgs = pkgs.python313Packages;
         propagatedBuildInputs = with pypkgs; [ ];
       in
       {
         packages = {
-          default = pkgs.python311.withPackages (_: [
+          default = pkgs.python313.withPackages (_: [
             (pkgs.callPackage self.packages.${system}.${pname} { })
           ]);
           ${pname} =
-            { lib, python311 }:
-            python311.pkgs.buildPythonPackage {
+            { lib, python313 }:
+            python313.pkgs.buildPythonPackage {
               inherit pname;
               version = builtins.elemAt (lib.splitString "\"" (
                 lib.findSingle (val: builtins.match "^__version__ = \".*\"$" val != null) (abort "none")
@@ -48,11 +48,11 @@
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            python38
             python39
             python310
+            python311
             python312
-            (python311.withPackages (
+            (python313.withPackages (
               ps:
               propagatedBuildInputs
               ++ (with ps; [
