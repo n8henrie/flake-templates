@@ -21,7 +21,7 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pyPkgs = pkgs.python312Packages;
+        pyPkgs = pkgs.python313Packages;
 
       in
       {
@@ -51,7 +51,10 @@
             default = self.outputs.packages.${system}.${name};
             ${name} = pyPkgs.python.withPackages (
               ps: with ps; [
-                hvplot
+                (hvplot.overridePythonAttrs {
+                  # 20250215 dask failing to build, only needed in checkPhase
+                  doCheck = false;
+                })
                 jupyter-black
                 jupyterlab
                 marimo
