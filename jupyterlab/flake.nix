@@ -59,6 +59,7 @@
                 jupyterlab
                 marimo
                 matplotlib
+                nbconvert
                 polars
                 pyarrow
                 scikitlearn
