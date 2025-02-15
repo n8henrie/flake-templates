@@ -21,6 +21,8 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        pyPkgs = pkgs.python312Packages;
+
       in
       {
         packages =
@@ -30,10 +32,10 @@
                 pname = "jupyter-black";
                 version = "0.3.4";
               in
-              pkgs.python311Packages.buildPythonPackage {
+              pyPkgs.buildPythonPackage {
                 inherit pname version;
                 format = "pyproject";
-                propagatedBuildInputs = with pkgs.python311Packages; [
+                propagatedBuildInputs = with pyPkgs; [
                   black
                   ipython
                   tokenize-rt
@@ -47,22 +49,31 @@
           in
           {
             default = self.outputs.packages.${system}.${name};
-            ${name} = pkgs.python311.withPackages (
+            ${name} = pyPkgs.python.withPackages (
               ps: with ps; [
                 hvplot
                 jupyter-black
                 jupyterlab
+                marimo
                 matplotlib
                 polars
                 pyarrow
                 scikitlearn
+                statsmodels
+                xlsx2csv
               ]
             );
           };
 
-        apps.default = {
-          type = "app";
-          program = "${self.packages.${system}.default}/bin/jupyter-lab";
+        apps = {
+          default = {
+            type = "app";
+            program = "${self.packages.${system}.default}/bin/jupyter-lab";
+          };
+          marimo = {
+            type = "app";
+            program = "${self.packages.${system}.default}/bin/marimo";
+          };
         };
       }
     );
