@@ -21,17 +21,17 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         pname = "foo";
-        pypkgs = pkgs.python313Packages;
-        propagatedBuildInputs = with pypkgs; [ ];
+        pyPkgs = pkgs.python313.pkgs;
+        propagatedBuildInputs = with pyPkgs; [ ];
       in
       {
         packages = {
-          default = pkgs.python313.withPackages (_: [
-            (pkgs.callPackage self.packages.${system}.${pname} { })
+          default = pyPkgs.python.withPackages (_: [
+            (pkgs.callPackage self.packages.${system}.${pname} { inherit pyPkgs; })
           ]);
           ${pname} =
-            { lib, python313 }:
-            python313.pkgs.buildPythonPackage {
+            { lib, pyPkgs }:
+            pyPkgs.buildPythonPackage {
               inherit pname;
               version = builtins.elemAt (lib.splitString "\"" (
                 lib.findSingle (val: builtins.match "^__version__ = \".*\"$" val != null) (abort "none")
@@ -41,7 +41,7 @@
 
               src = lib.cleanSource ./.;
               pyproject = true;
-              nativeBuildInputs = with pypkgs; [ setuptools-scm ];
+              nativeBuildInputs = with pyPkgs; [ setuptools-scm ];
               inherit propagatedBuildInputs;
             };
         };
@@ -52,7 +52,7 @@
             python310
             python311
             python312
-            (python313.withPackages (
+            (pyPkgs.python.withPackages (
               ps:
               propagatedBuildInputs
               ++ (with ps; [
