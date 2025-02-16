@@ -19,6 +19,7 @@
         "convert-shell-script"
         "cpp"
         "jupyterlab"
+        "playwright"
         "python"
         "rust"
         "rust-oxalica"
