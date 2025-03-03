@@ -1,5 +1,5 @@
 {
-  description = "Nixify an existing shell script. Thanksto https://ertt.ca/nix/shell-scripts/";
+  description = "Nixify an existing shell script. Provide binary wrapper for macOS permissions.";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
@@ -21,32 +21,17 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        buildInputs = with pkgs; [ cowsay ];
-        script = (pkgs.writeScriptBin name (builtins.readFile ./simple-script.sh)).overrideAttrs (old: {
-          buildCommand =
-            old.buildCommand
-            + ''
-              patchShebangs $out;
-
-              # substituteInPlace $target --replace-fail "foo" "bar"
-              # eval "$checkPhase"
-            '';
-        });
+        buildInputs = [ ];
       in
       {
         packages = {
-          default = self.outputs.packages.${system}.script;
-          script = pkgs.symlinkJoin {
-            inherit name;
-            paths = [ script ] ++ buildInputs;
-            nativeBuildInputs = [ pkgs.makeBinaryWrapper ];
-            postBuild = "wrapProgram $out/bin/${name} --set PATH $out/bin";
-          };
+          default = self.outputs.packages.${system}.${name};
+          ${name} = pkgs.callPackage ./. { inherit buildInputs name; };
         };
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.script}/bin/${name}";
+          program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
         devShells.default = pkgs.mkShell { inherit buildInputs; };
