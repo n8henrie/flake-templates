@@ -1,10 +1,10 @@
 {
-  description = "Flake for https://github.com/n8henrie/foo";
+  description = "Reproducible playwright scripts via nix";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
 
   outputs =
-    { nixpkgs, ... }:
+    { self, nixpkgs, ... }:
     let
       systems = [
         "x86_64-darwin"
@@ -23,15 +23,19 @@
         pyPkgs = pkgs.python313.pkgs;
       in
       {
-        packages.default = pyPkgs.playwright.overrideAttrs {
-          postInstall =
-            let
-              inherit (pkgs.playwright-driver) browsers;
-            in
-            ''
-              wrapProgram $out/bin/playwright \
-                --set PLAYWRIGHT_BROWSERS_PATH "${browsers}"
-            '';
+        packages = {
+          default = self.outputs.packages.${system}.python-with-playwright;
+          python-with-playwright = pyPkgs.python.buildEnv.override (old: {
+            extraLibs = [ pyPkgs.playwright ];
+            makeWrapperArgs =
+              let
+                inherit (pkgs.playwright-driver) browsers;
+              in
+              old.makeWrapperArgs or [ ]
+              ++ [
+                "--set-default PLAYWRIGHT_BROWSERS_PATH ${browsers}"
+              ];
+          });
         };
 
         devShells.default = pkgs.mkShell {
