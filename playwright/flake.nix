@@ -26,7 +26,10 @@
         packages = {
           default = self.outputs.packages.${system}.python-with-playwright;
           python-with-playwright = pyPkgs.python.buildEnv.override (old: {
-            extraLibs = [ pyPkgs.playwright ];
+            extraLibs = with pyPkgs; [
+              playwright
+              pytest
+            ];
             makeWrapperArgs =
               let
                 inherit (pkgs.playwright-driver) browsers;
