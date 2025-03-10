@@ -38,22 +38,7 @@
           });
         };
 
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            python39
-            python310
-            python311
-            python312
-            (pyPkgs.python.withPackages (
-              ps:
-              (with ps; [
-                mypy
-                pytest
-                tox
-              ])
-            ))
-          ];
-        };
+        devShells.default = self.outputs.packages.${system}.python-with-playwright.env;
       }
     );
 }
