@@ -34,10 +34,7 @@
               let
                 inherit (pkgs.playwright-driver) browsers;
               in
-              old.makeWrapperArgs or [ ]
-              ++ [
-                "--set-default PLAYWRIGHT_BROWSERS_PATH ${browsers}"
-              ];
+              old.makeWrapperArgs or [ ] ++ [ "--set-default PLAYWRIGHT_BROWSERS_PATH ${browsers}" ];
           });
         };
 
