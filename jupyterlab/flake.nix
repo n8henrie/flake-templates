@@ -51,6 +51,7 @@
             default = self.outputs.packages.${system}.${name};
             ${name} = pyPkgs.python.withPackages (
               ps: with ps; [
+                altair
                 (hvplot.overridePythonAttrs {
                   # 20250215 dask failing to build, only needed in checkPhase
                   doCheck = false;
