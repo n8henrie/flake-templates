@@ -1,7 +1,7 @@
 {
   description = "Basic setup for data sciencey stuff with jupyter / python";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
   outputs =
     { self, nixpkgs }:

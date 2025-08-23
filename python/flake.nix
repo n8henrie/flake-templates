@@ -1,7 +1,7 @@
 {
   description = "Flake for https://github.com/n8henrie/foo";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
   outputs =
     { self, nixpkgs }:

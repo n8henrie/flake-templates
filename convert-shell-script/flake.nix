@@ -1,7 +1,7 @@
 {
   description = "Nixify an existing shell script. Provide binary wrapper for macOS permissions.";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
   outputs =
     { self, nixpkgs }:
