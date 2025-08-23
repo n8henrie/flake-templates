@@ -23,7 +23,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        packages.${system} = {
+        packages = {
           default = self.packages.${system}.foo;
           foo = pkgs.stdenv.mkDerivation {
             inherit name;
@@ -40,10 +40,10 @@
           };
         };
 
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${self.packages.${system}.foo}/bin/foo";
         };
       }
-    ) { } systems;
+    );
 }
