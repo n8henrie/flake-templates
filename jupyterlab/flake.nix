@@ -49,25 +49,33 @@
           in
           {
             default = self.outputs.packages.${system}.${name};
-            ${name} = pyPkgs.python.withPackages (
-              ps: with ps; [
-                altair
-                (hvplot.overridePythonAttrs {
-                  # 20250215 dask failing to build, only needed in checkPhase
-                  doCheck = false;
-                })
-                jupyter-black
-                jupyterlab
-                marimo
-                matplotlib
-                nbconvert
-                polars
-                pyarrow
-                scikitlearn
-                statsmodels
-                xlsx2csv
-              ]
-            );
+            ${name} = pkgs.symlinkJoin {
+              name = "data";
+              paths = with pkgs; [
+                nodejs
+                (pyPkgs.python.withPackages (
+                  ps: with ps; [
+                    altair
+                    (hvplot.overridePythonAttrs {
+                      # 20250215 dask failing to build, only needed in checkPhase
+                      doCheck = false;
+                    })
+                    jupyter-black
+                    jupyterlab
+                    marimo
+                    matplotlib
+                    nbconvert
+                    polars
+                    pyarrow
+                    scikitlearn
+                    statsmodels
+                    xlsx2csv
+                  ]
+                ))
+              ];
+              buildInputs = [ pkgs.makeBinaryWrapper ];
+              postBuild = "wrapProgram $out/bin/marimo --prefix PATH : $out/bin";
+            };
           };
 
         apps = {
