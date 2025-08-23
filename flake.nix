@@ -34,18 +34,43 @@
         with lib;
         f: foldAttrs mergeAttrs { } (map (s: mapAttrs (_: v: { ${s} = v; }) (f s)) systems);
     in
-    eachSystem (system: {
-      checks = lib.pipe self.inputs [
-        (lib.filterAttrs (n: v: n != "nixpkgs" && builtins.hasAttr "checks" v))
-        (lib.concatMapAttrs (
-          fname: fval:
-          (lib.mapAttrs' (cname: cval: {
-            name = "${fname}-${cname}";
-            value = cval;
-          }) fval.checks.${system})
-        ))
-      ];
-    })
+    eachSystem (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        checks =
+          lib.pipe self.inputs [
+            (lib.filterAttrs (n: v: n != "nixpkgs" && builtins.hasAttr "checks" v))
+            (lib.concatMapAttrs (
+              fname: fval:
+              (lib.mapAttrs' (cname: cval: {
+                name = "${fname}-${cname}";
+                value = cval;
+              }) fval.checks.${system})
+            ))
+          ]
+          // {
+            lint =
+              pkgs.runCommandLocal "lint"
+                {
+                  src = ./.;
+                  nativeBuildInputs = with pkgs; [
+                    deadnix
+                    nixfmt
+                    statix
+                  ];
+                }
+                ''
+                  deadnix --fail .
+                  statix check
+                  find . -name '*.nix' -exec nixfmt --check {} +
+                  touch $out
+                '';
+          };
+      }
+    )
     // {
       templates = builtins.mapAttrs (_: v: {
         path = v;
