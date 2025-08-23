@@ -78,6 +78,8 @@
             };
           };
 
+        checks = self.outputs.packages.${system};
+
         apps = {
           default = {
             type = "app";
