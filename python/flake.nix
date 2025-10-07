@@ -1,10 +1,9 @@
 {
   description = "Flake for https://github.com/n8henrie/foo";
-
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
   outputs =
-    { self, nixpkgs }:
+    { nixpkgs, ... }:
     let
       systems = [
         "x86_64-darwin"
@@ -20,30 +19,15 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pname = "foo";
+        pname = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.name;
         pyPkgs = pkgs.python313.pkgs;
-        propagatedBuildInputs = with pyPkgs; [ ];
       in
       {
         packages = {
-          default = pyPkgs.python.withPackages (_: [
-            (pkgs.callPackage self.packages.${system}.${pname} { inherit pyPkgs; })
+          default = pyPkgs.python.withPackages (ps: [
+            (ps.callPackage ./. { })
           ]);
-          ${pname} =
-            { lib, pyPkgs }:
-            pyPkgs.buildPythonPackage {
-              inherit pname;
-              version = builtins.elemAt (lib.splitString "\"" (
-                lib.findSingle (val: builtins.match "^__version__ = \".*\"$" val != null) (abort "none")
-                  (abort "multiple")
-                  (lib.splitString "\n" (builtins.readFile ./src/${pname}/__init__.py))
-              )) 1;
-
-              src = lib.cleanSource ./.;
-              pyproject = true;
-              nativeBuildInputs = with pyPkgs; [ setuptools-scm ];
-              inherit propagatedBuildInputs;
-            };
+          ${pname} = pyPkgs.callPackage ./. { };
         };
 
         devShells.default = pkgs.mkShell {
