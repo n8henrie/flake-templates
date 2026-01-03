@@ -22,18 +22,22 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            nodejs
-            (python3.withPackages (
+          packages = [
+            (pkgs.python3.withPackages (
               ps: with ps; [
                 altair
                 marimo
                 polars
                 ruff
+                scikit-learn
                 sqlalchemy
               ]
             ))
-          ];
+          ]
+          ++ (with pkgs; [
+            nodejs
+            ty
+          ]);
         };
       }
     );
