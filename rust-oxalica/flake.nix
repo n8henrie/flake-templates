@@ -39,6 +39,7 @@
           inherit system;
           overlays = [ (import rust-overlay) ];
         };
+        # toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
         toolchain = pkgs.rust-bin.stable.latest.default;
         rustPlatform = pkgs.makeRustPlatform {
           rustc = toolchain;
@@ -65,7 +66,17 @@
           program = "${self.packages.${system}.${name}}/bin/${name}";
         };
 
-        devShells.default = pkgs.mkShell { buildInputs = [ toolchain ]; };
+        devShells.default = pkgs.mkShell {
+          buildInputs = [
+            toolchain
+          ]
+          # ++ (with pkgs; [
+          # avrdude
+          # pkgsCross.avr.buildPackages.gcc
+          # ravedude
+          # ])
+          ;
+        };
       }
     );
 }
