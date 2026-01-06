@@ -67,7 +67,7 @@
                     nbconvert
                     polars
                     pyarrow
-                    scikitlearn
+                    scikit-learn
                     statsmodels
                     xlsx2csv
                   ]
