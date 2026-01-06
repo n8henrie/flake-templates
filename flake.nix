@@ -7,6 +7,7 @@
     aarch64-darwin-trivial.url = ./aarch64-darwin-trivial;
     convert-shell-script.url = ./convert-shell-script;
     cpp.url = ./cpp;
+    datascience.url = ./datascience;
     jupyterlab.url = ./jupyterlab;
     playwright.url = ./playwright;
     python.url = ./python;
