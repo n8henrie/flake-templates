@@ -56,7 +56,7 @@
                 (fromTOML (builtins.readFile ./Cargo.toml)).package.version
               else
                 "placeholder";
-            src = ./.;
+            src = pkgs.lib.cleanSource ./.;
             cargoLock.lockFile = ./Cargo.lock;
           };
         };

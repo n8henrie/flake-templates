@@ -47,7 +47,7 @@
           ${name} = rustPlatform.buildRustPackage {
             inherit name;
             version = "0.0.1";
-            src = ./.;
+            src = pkgs.lib.cleanSource ./.;
             cargoLock.lockFile = ./Cargo.lock;
 
             nativeBuildInputs = with pkgs; [

@@ -56,7 +56,7 @@
             lint =
               pkgs.runCommandLocal "lint"
                 {
-                  src = ./.;
+                  src = pkgs.lib.cleanSource ./.;
                   nativeBuildInputs = with pkgs; [
                     deadnix
                     nixfmt
