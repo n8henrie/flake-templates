@@ -19,7 +19,7 @@
       # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
       name =
         if builtins.pathExists ./Cargo.toml then
-          (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.name
+          (fromTOML (builtins.readFile ./Cargo.toml)).package.name
         else
           "placeholder";
       systems = [
@@ -53,7 +53,7 @@
             inherit name;
             version =
               if builtins.pathExists ./Cargo.toml then
-                (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version
+                (fromTOML (builtins.readFile ./Cargo.toml)).package.version
               else
                 "placeholder";
             src = ./.;
