@@ -30,7 +30,7 @@
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.${name}}/bin/${name}";
+          program = "${pkgs.lib.getExe self.packages.${system}.default}";
         };
 
         devShells.default = pkgs.mkShell { };
