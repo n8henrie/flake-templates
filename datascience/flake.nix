@@ -37,6 +37,7 @@
           ++ (with pkgs; [
             nodejs
             ty
+            uv
           ]);
         };
       }
