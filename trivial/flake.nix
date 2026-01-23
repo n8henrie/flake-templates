@@ -33,7 +33,9 @@
           program = "${pkgs.lib.getExe self.packages.${system}.default}";
         };
 
-        devShells.default = pkgs.mkShell { };
+        devShells.default = pkgs.mkShell {
+          inputsFrom = self.packages.default;
+        };
       }
     );
 }
