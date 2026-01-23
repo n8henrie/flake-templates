@@ -9,6 +9,8 @@
     cpp.url = ./cpp;
     datascience.url = ./datascience;
     jupyterlab.url = ./jupyterlab;
+    module.url = ./module;
+    package.url = ./package;
     playwright.url = ./playwright;
     python.url = ./python;
     rust-oxalica.url = ./rust-oxalica;
