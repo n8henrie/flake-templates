@@ -35,7 +35,7 @@
           };
 
           devShells.default = pkgs.mkShell {
-            inputsFrom = self.packages.default;
+            inputsFrom = [ self.packages.${system}.default ];
           };
         }
       )
