@@ -83,11 +83,11 @@
         apps = {
           default = {
             type = "app";
-            program = "${self.packages.${system}.default}/bin/jupyter-lab";
+            program = pkgs.lib.getExe' self.packages.${system}.default "jupyter-lab";
           };
           marimo = {
             type = "app";
-            program = "${self.packages.${system}.default}/bin/marimo";
+            program = pkgs.lib.getExe' self.packages.${system}.default "marimo";
           };
         };
       }

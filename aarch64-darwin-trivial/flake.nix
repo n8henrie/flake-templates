@@ -12,7 +12,7 @@
       packages.${system}.default = pkgs.writeShellScriptBin name "echo hello there";
       apps.${system}.default = {
         type = "app";
-        program = "${self.packages.${system}.default}/bin/${name}";
+        program = pkgs.lib.getExe' self.packages.${system}.default name;
       };
       devShells.${system}.default = pkgs.mkShellNoCC {
         nativeBuildInputs = [ ];

@@ -17,7 +17,7 @@
     }:
     let
       inherit (nixpkgs) lib;
-      inherit ((builtins.fromTOML (builtins.readFile ./Cargo.toml)).package) name;
+      inherit ((fromTOML (builtins.readFile ./Cargo.toml)).package) name;
       systems = [
         "x86_64-darwin"
         "aarch64-darwin"
@@ -64,7 +64,7 @@
             runner = pkgs.writeShellScriptBin "run" ''
               ${lib.getExe pkgs.geckodriver} &
               pid=$?
-              ${self.outputs.packages.${system}.${name}}/bin/${name}
+              ${pkgs.lib.getExe' self.packages.${system}.default name}
               kill $pid
             '';
           in

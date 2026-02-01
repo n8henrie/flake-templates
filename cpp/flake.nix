@@ -42,7 +42,7 @@
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.foo}/bin/foo";
+          program = pkgs.lib.getExe' self.packages.${system}.default name;
         };
       }
     );

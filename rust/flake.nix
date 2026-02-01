@@ -9,7 +9,7 @@
       # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
       pname =
         if builtins.pathExists ./Cargo.toml then
-          (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.name
+          (fromTOML (builtins.readFile ./Cargo.toml)).package.name
         else
           "placeholder";
       systems = [
@@ -35,7 +35,7 @@
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.${pname}}/bin/${pname}";
+          program = pkgs.lib.getExe' self.packages.${system}.${pname} pname;
         };
 
         devShells.default = pkgs.mkShell {
