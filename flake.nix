@@ -12,7 +12,8 @@
     module.url = ./module;
     package.url = ./package;
     playwright.url = ./playwright;
-    python.url = ./python;
+    python-app.url = ./python-app;
+    python-package.url = ./python-package;
     rust-oxalica.url = ./rust-oxalica;
     rust.url = ./rust;
     selenium-rs.url = ./selenium-rs;

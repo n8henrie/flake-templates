@@ -19,13 +19,13 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pname = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.name;
+        pname = (fromTOML (builtins.readFile ./pyproject.toml)).project.name;
         pyPkgs = pkgs.python313.pkgs;
       in
       {
         packages = {
           default = pyPkgs.python.withPackages (ps: [
-            (ps.callPackage ./. { })
+            (ps.callPackage ./package.nix { })
           ]);
           ${pname} = pyPkgs.callPackage ./. { };
         };

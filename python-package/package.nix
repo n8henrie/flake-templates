@@ -16,5 +16,4 @@ buildPythonPackage {
   pyproject = true;
   build-system = [ setuptools-scm ];
   dependencies = [ ];
-  meta.mainProgram = pname;
 }
