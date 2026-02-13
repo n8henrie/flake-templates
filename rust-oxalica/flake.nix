@@ -67,6 +67,7 @@
         };
 
         devShells.default = pkgs.mkShell {
+          inputsFrom = self.outputs.packages.${system}.default;
           buildInputs = [
             toolchain
           ]

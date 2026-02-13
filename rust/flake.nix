@@ -39,12 +39,14 @@
         };
 
         devShells.default = pkgs.mkShell {
+          inputsFrom = self.outputs.packages.${system}.default;
           buildInputs = with pkgs; [
+            bacon
             cargo
-            cargo-watch
             clippy
             rust-analyzer
             rustfmt
+            watchexec
           ];
         };
       }
