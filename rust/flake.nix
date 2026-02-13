@@ -30,7 +30,7 @@
       {
         packages = {
           default = self.packages.${system}.${pname};
-          ${pname} = pkgs.callPackage ./. { inherit pname; };
+          ${pname} = pkgs.callPackage ./package.nix { inherit pname; };
         };
 
         apps.default = {

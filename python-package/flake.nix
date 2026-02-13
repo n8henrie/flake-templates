@@ -27,7 +27,7 @@
           default = pyPkgs.python.withPackages (ps: [
             (ps.callPackage ./package.nix { })
           ]);
-          ${pname} = pyPkgs.callPackage ./. { };
+          ${pname} = pyPkgs.callPackage ./package.nix { };
         };
 
         devShells.default = pkgs.mkShell {

@@ -26,7 +26,7 @@
       {
         packages = {
           default = self.outputs.packages.${system}.${name};
-          ${name} = pkgs.callPackage ./. { inherit buildInputs name; };
+          ${name} = pkgs.callPackage ./package.nix { inherit buildInputs name; };
         };
 
         apps.default = {

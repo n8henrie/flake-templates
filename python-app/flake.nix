@@ -25,7 +25,7 @@
       {
         packages = {
           default = self.outputs.packages.${system}.${name};
-          ${name} = pyPkgs.callPackage ./. {
+          ${name} = pyPkgs.callPackage ./package.nix {
             inherit pyPkgs;
             pname = name;
           };
