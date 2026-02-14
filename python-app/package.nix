@@ -33,7 +33,7 @@ buildPythonApplication (finalAttrs: {
   src = lib.cleanSource ./.;
   pyproject = true;
   build-system = [ setuptools-scm ];
-  dependencies = with pyPkgs; [ icalendar ];
+  dependencies = with pyPkgs; [ ];
   checkInputs = [ pythonImportsCheckHook ];
   meta.mainProgram = pname;
 })
