@@ -39,7 +39,7 @@
         };
 
         devShells.default = pkgs.mkShell {
-          inputsFrom = self.outputs.packages.${system}.default;
+          inputsFrom = [ self.outputs.packages.${system}.default ];
           buildInputs = with pkgs; [
             bacon
             cargo
