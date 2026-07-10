@@ -1,15 +1,13 @@
 {
-  pname,
   lib,
   rustPlatform,
 }:
+let
+  inherit ((fromTOML (builtins.readFile ./Cargo.toml)).package) version name;
+in
 rustPlatform.buildRustPackage {
-  inherit pname;
-  version =
-    if builtins.pathExists ./Cargo.toml then
-      (fromTOML (builtins.readFile ./Cargo.toml)).package.version
-    else
-      "placeholder";
+  pname = name;
+  inherit version;
   src = lib.cleanSource ./.;
   cargoLock.lockFile = ./Cargo.lock;
 }
