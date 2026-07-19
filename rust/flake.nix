@@ -6,12 +6,7 @@
   outputs =
     { self, nixpkgs }:
     let
-      # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
-      pname =
-        if builtins.pathExists ./Cargo.toml then
-          (fromTOML (builtins.readFile ./Cargo.toml)).package.name
-        else
-          "placeholder";
+      inherit ((fromTOML (builtins.readFile ./Cargo.toml)).package) name;
       systems = [
         "x86_64-darwin"
         "aarch64-darwin"
@@ -29,13 +24,13 @@
       in
       {
         packages = {
-          default = self.packages.${system}.${pname};
-          ${pname} = pkgs.callPackage ./package.nix { };
+          default = self.packages.${system}.${name};
+          ${name} = pkgs.callPackage ./package.nix { };
         };
 
         apps.default = {
           type = "app";
-          program = pkgs.lib.getExe' self.packages.${system}.${pname} pname;
+          program = pkgs.lib.getExe self.packages.${system}.${name};
         };
 
         devShells.default = pkgs.mkShell {
