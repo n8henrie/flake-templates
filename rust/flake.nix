@@ -6,7 +6,12 @@
   outputs =
     { self, nixpkgs }:
     let
-      inherit ((fromTOML (builtins.readFile ./Cargo.toml)).package) name;
+      # can't `nix flake show` templates without `Cargo.toml`
+      name =
+        if builtins.pathExists ./Cargo.toml then
+          (fromTOML (builtins.readFile ./Cargo.toml)).package.name
+        else
+          "placeholder";
       systems = [
         "x86_64-darwin"
         "aarch64-darwin"

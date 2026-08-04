@@ -49,16 +49,7 @@
       {
         packages = {
           default = self.packages.${system}.${name};
-          ${name} = rustPlatform.buildRustPackage {
-            inherit name;
-            version =
-              if builtins.pathExists ./Cargo.toml then
-                (fromTOML (builtins.readFile ./Cargo.toml)).package.version
-              else
-                "placeholder";
-            src = pkgs.lib.cleanSource ./.;
-            cargoLock.lockFile = ./Cargo.lock;
-          };
+          ${name} = pkgs.callPackage ./package.nix { inherit rustPlatform; };
         };
 
         apps.default = {
