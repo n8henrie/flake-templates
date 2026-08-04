@@ -18,8 +18,8 @@
     eachSystem (
       system:
       let
+        inherit ((nixpkgs.lib.importTOML ./pyproject.toml).project) name;
         pkgs = nixpkgs.legacyPackages.${system};
-        pname = (fromTOML (builtins.readFile ./pyproject.toml)).project.name;
         pyPkgs = pkgs.python313.pkgs;
       in
       {
@@ -27,7 +27,7 @@
           default = pyPkgs.python.withPackages (ps: [
             (ps.callPackage ./package.nix { })
           ]);
-          ${pname} = pyPkgs.callPackage ./package.nix { };
+          ${name} = pyPkgs.callPackage ./package.nix { };
         };
 
         devShells.default = pkgs.mkShell {

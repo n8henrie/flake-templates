@@ -19,7 +19,7 @@
       # Placeholder name allows one to enter `nix develop` prior to `Cargo.toml` existing
       name =
         if builtins.pathExists ./Cargo.toml then
-          (fromTOML (builtins.readFile ./Cargo.toml)).package.name
+          (nixpkgs.lib.importTOML ./Cargo.toml).package.name
         else
           "placeholder";
       systems = [

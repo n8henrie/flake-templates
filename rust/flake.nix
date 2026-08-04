@@ -9,7 +9,7 @@
       # can't `nix flake show` templates without `Cargo.toml`
       name =
         if builtins.pathExists ./Cargo.toml then
-          (fromTOML (builtins.readFile ./Cargo.toml)).package.name
+          (nixpkgs.lib.importTOML ./Cargo.toml).package.name
         else
           "placeholder";
       systems = [
